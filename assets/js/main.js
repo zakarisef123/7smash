@@ -256,7 +256,7 @@
       <article class="card card--${CARD_COLORS[i % CARD_COLORS.length]}" style="--d:${i * 60}ms">
         ${it.tag ? `<span class="card__tag">${it.tag}</span>` : ""}
         ${it.photo
-          ? `<div class="card__visual card__visual--photo"><img src="${it.photo}" alt="${it.name}" loading="lazy"></div>`
+          ? `<div class="card__visual card__visual--photo"><img src="${it.photo}" alt="${it.name}" loading="lazy"${it.photoPos ? ` style="object-position:${it.photoPos}"` : ""}></div>`
           : `<div class="card__visual">${itemVisual(cat.id, it)}</div>`}
         <div class="card__body">
           <h3>${it.name}</h3>
@@ -264,7 +264,7 @@
         </div>
         <div class="card__foot">
           <button type="button" class="add add--solo" data-add="${cat.id}:${i}:solo" aria-label="Ajouter ${it.name} au panier, ${euro(it.price)}">
-            <span class="add__label">${it.menu ? "Seul" : "Ajouter"}</span><b>${euro(it.price)}</b><i aria-hidden="true">+</i></button>
+            <span class="add__label">${it.menu ? "Seul" : it.options ? "Composer" : "Ajouter"}${it.options ? `<small>${it.options.filter((g) => g.required).map((g) => g.label.toLowerCase() + " au choix").join(", ") || "options"}</small>` : ""}</span><b>${euro(it.price)}</b><i aria-hidden="true">+</i></button>
           ${it.menu ? `<button type="button" class="add add--menu" data-add="${cat.id}:${i}:menu" aria-label="Ajouter ${it.name} en menu au panier, ${euro(it.menu)}">
             <span class="add__label">Menu<small>frites + boisson${it.menuNote ? " " + it.menuNote : ""}</small></span><b>${euro(it.menu)}</b><i aria-hidden="true">+</i></button>` : ""}
         </div>
@@ -435,7 +435,103 @@
     const it = cat && cat.items[+idx];
     if (!it) return;
     const unit = variant === "menu" ? it.menu : (it.price != null ? it.price : cat.price);
-    addToCart({ key: ref, name: it.name, photo: it.photo, variant, unit, drink: variant === "menu" ? DRINKS[0] || "" : undefined });
+    const entry = { key: ref, name: it.name, photo: it.photo, variant, unit, drink: variant === "menu" ? DRINKS[0] || "" : undefined };
+    if (it.options && it.options.length) openOptions(it, entry); else addToCart(entry);
+  }
+
+  /* fenêtre d'options (viande, sauce, suppléments…) */
+  const optEl = $("#opt");
+  let optCtx = null;
+  function optPrice() {
+    if (!optCtx) return 0;
+    const extra = $$("#optGroups input:checked").reduce((s, i) => s + (+i.dataset.price || 0), 0);
+    return optCtx.entry.unit + extra;
+  }
+  function refreshOpt() {
+    $$("#optGroups fieldset").forEach((fs) => {
+      const max = +fs.dataset.max || 99;
+      const boxes = $$("input[type=checkbox]", fs);
+      const n = boxes.filter((b) => b.checked).length;
+      boxes.forEach((b) => { b.disabled = !b.checked && max > 1 && n >= max && !("exclusive" in b.dataset); });
+    });
+    $("#optSubmit").textContent = `Ajouter · ${euro(optPrice())}`;
+  }
+  function optHint(g) {
+    const max = g.max || 1, min = g.min || (g.required ? 1 : 0);
+    if (min && min === max) return `Choisis-en ${max}.`;
+    if (min) return `Choisis-en de ${min} à ${max}.`;
+    return max >= 5 ? "Au choix." : `Choisis-en ${max} max.`;
+  }
+  function openOptions(it, entry) {
+    optCtx = { it, entry };
+    lastFocus = document.activeElement;
+    $("#optTitle").textContent = it.name + (entry.variant === "menu" ? " (menu)" : "");
+    $("#optDesc").textContent = it.desc || "";
+    const img = $("#optImg");
+    img.hidden = !it.photo; if (it.photo) img.src = it.photo;
+    $("#optError").textContent = "";
+    $("#optGroups").innerHTML = it.options.map((g, gi) => `
+      <fieldset data-max="${g.max || 1}" data-min="${g.min || (g.required ? 1 : 0)}" data-label="${esc(g.label)}">
+        <legend>${esc(g.label)}
+          <span class="opt__rule${g.required ? " is-req" : ""}">${g.required ? "Obligatoire" : "Facultatif"}</span>
+        </legend>
+        <p class="opt__hint">${optHint(g)}</p>
+        ${g.choices.map((c, ci) => `
+          <label class="opt__choice">
+            <input type="${g.required && (g.max || 1) === 1 ? "radio" : "checkbox"}" name="g${gi}" value="${esc(c.name)}" data-price="${c.price || 0}"${c.exclusive ? " data-exclusive" : ""}>
+            <span class="opt__name">${esc(c.name)}${c.spicy ? " 🔥" : ""}</span>
+            ${c.price ? `<span class="opt__price">+${euro(c.price)}</span>` : ""}
+            <i aria-hidden="true"></i>
+          </label>`).join("")}
+      </fieldset>`).join("");
+    refreshOpt();
+    optEl.hidden = false;
+    requestAnimationFrame(() => optEl.classList.add("is-open"));
+    document.body.classList.add("cart-open");
+    setTimeout(() => { const f = $("#optGroups input"); if (f) f.focus(); }, 60);
+  }
+  function closeOptions() {
+    if (!optEl || optEl.hidden) return false;
+    optEl.classList.remove("is-open");
+    if (cartEl.hidden) document.body.classList.remove("cart-open");
+    setTimeout(() => { optEl.hidden = true; }, 300);
+    if (lastFocus) lastFocus.focus();
+    optCtx = null;
+    return true;
+  }
+  if (optEl) {
+    $("#optGroups").addEventListener("change", (e) => {
+      const i = e.target;
+      const fs = i.closest("fieldset");
+      $("#optError").textContent = "";
+      // max 1 en facultatif : les cases se comportent comme des boutons radio décochables
+      if (i.type === "checkbox" && i.checked && (+fs.dataset.max || 1) === 1) $$("input", fs).forEach((o) => { if (o !== i) o.checked = false; });
+      // choix exclusif ("Sans sauce") : décoche le reste, et inversement
+      if (i.checked && "exclusive" in i.dataset) $$("input", fs).forEach((o) => { if (o !== i) o.checked = false; });
+      else if (i.checked) $$("input[data-exclusive]", fs).forEach((o) => { o.checked = false; });
+      refreshOpt();
+    });
+    $("#optForm").addEventListener("submit", (e) => {
+      e.preventDefault();
+      if (!optCtx) return;
+      const picks = [];
+      for (const fs of $$("#optGroups fieldset")) {
+        const checked = $$("input:checked", fs);
+        const vals = checked.map((i) => i.value);
+        const min = +fs.dataset.min || 0;
+        const exclusive = checked.some((i) => "exclusive" in i.dataset);
+        if (!exclusive && vals.length < min) {
+          $("#optError").textContent = min > 1 ? `${fs.dataset.label} : choisis-en ${min}.` : `Choisis : ${fs.dataset.label}.`;
+          fs.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          return;
+        }
+        if (vals.length) picks.push(`${fs.dataset.label} : ${vals.join(", ")}`);
+      }
+      const { entry } = optCtx;
+      const detail = picks.join(" · ");
+      addToCart({ ...entry, key: entry.key + "|" + detail, unit: optPrice(), detail });
+      closeOptions();
+    });
   }
 
   const cartTotal = () => cart.reduce((s, l) => s + l.unit * l.qty, 0);
@@ -554,6 +650,7 @@
       const add = e.target.closest("[data-add]");
       if (add) { addFromRef(add.dataset.add); return; }
       if (e.target.closest("[data-open-cart]")) { openCart(); return; }
+      if (e.target.closest("[data-close-opt]")) { closeOptions(); return; }
       if (e.target.closest("[data-close-cart]")) { closeCart(); return; }
       const q = e.target.closest("[data-qty]");
       if (q) {
@@ -568,9 +665,10 @@
       if (s) { cart[+s.dataset.drink].drink = s.value; saveCart(); }
     });
     document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") closeCart();
-      if (e.key === "Tab" && !cartEl.hidden) {
-        const f = $$("button, a[href], input, select, textarea", $(".cart__panel")).filter((el) => !el.disabled && el.offsetParent !== null);
+      if (e.key === "Escape") { if (!closeOptions()) closeCart(); }
+      const modal = optEl && !optEl.hidden ? $(".opt__panel") : !cartEl.hidden ? $(".cart__panel") : null;
+      if (e.key === "Tab" && modal) {
+        const f = $$("button, a[href], input, select, textarea", modal).filter((el) => !el.disabled && el.offsetParent !== null);
         if (!f.length) return;
         if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
         else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }

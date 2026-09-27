@@ -23,7 +23,15 @@ window.SMASH_DATA = {
   /* Carte.
      price : prix seul · menu : prix en menu (frites + boisson) · menuNote : bonus du menu
      tag : badge optionnel · photo : chemin d'une vraie photo (sinon illustration auto)
-     compact: true → catégorie affichée en liste (boissons) */
+     photoPos : cadrage de la photo (CSS object-position, défaut "50% 72%")
+     compact: true → catégorie affichée en liste (boissons)
+     options : choix à faire avant l'ajout au panier (fenêtre de sélection), ex. :
+       options: [
+         { label: "Viandes", required: true, max: 1, choices: [{ name: "Poulet" }, { name: "Steak" }] },
+         { label: "Suppléments", max: 3, choices: [{ name: "Cheddar", price: 1.00 }, { name: "Bacon", price: 1.50 }] }
+       ]
+       required : choix obligatoire · min / max : nombre de choix · price : supplément (optionnel)
+       spicy: true → petit 🔥 · exclusive: true → choix seul (ex. "Sans sauce"), valide le groupe */
   menu: [
     {
       id: "smash",
@@ -35,7 +43,7 @@ window.SMASH_DATA = {
         { name: "Smash Bacon BBQ",     desc: "Double smash, cheddar, bacon, salade, pickles, oignons grillés, sauce BBQ.", price: 16.90, menu: 19.90, menuNote: "+ topping cheddar", photo: "assets/img/menu-bacon-bbq.jpg" },
         { name: "Smash Raclette",      desc: "Double smash, bacon, galette de pomme de terre, raclette fondante, salade, oignons grillés, topping oignons crispy.", price: 17.50, menu: 20.90, tag: "Savoyard", photo: "assets/img/menu-raclette.jpg" },
         { name: "Triple Smash",        desc: "Triple smash, oignons grillés, salade, pickles, cheddar, sauce Smash.", price: 19.50, menu: 21.90, menuNote: "+ topping Doritos & cheddar fondu", tag: "Monster" },
-        { name: "Smash Cheese",        desc: "Smash, pickles, cheddar, ketchup. Le classique.",                         price: 7.00, tag: "Petit prix" }
+        { name: "Smash Cheese",        desc: "Smash, pickles, cheddar, ketchup. Le classique.",                         price: 7.00, tag: "Petit prix", photo: "assets/img/smash-cheese.jpg", photoPos: "50% 50%" }
       ]
     },
     {
@@ -52,8 +60,21 @@ window.SMASH_DATA = {
       label: "Bowls",
       emoji: "🥣",
       items: [
-        { name: "Rice Bowl",  desc: "Riz nature, viande au choix, sauce fromagère.", price: 8.00 },
-        { name: "Fries Bowl", desc: "Frites servies en bol, généreusement garnies.",  price: 15.90, tag: "Populaire" }
+        { name: "Rice Bowl",  desc: "Riz nature, viande au choix, sauce fromagère.", price: 8.00, photo: "assets/img/rice-bowl.jpg",
+          options: [
+            { label: "Viandes", required: true, max: 1, choices: [{ name: "Poulet Mariné" }, { name: "Steak" }, { name: "Cordon Bleu" }] },
+            { label: "Sauce rice bowl", max: 1, choices: [{ name: "Sauce sweet chili" }, { name: "Sauce Shiracha", spicy: true }, { name: "Sauce BBQ" }] }
+          ] },
+        { name: "Fries Bowl", desc: "Frites servies en bol, viande au choix, 2 sauces, suppléments à volonté.", price: 15.90, tag: "Populaire", photo: "assets/img/fries-bowl.jpg",
+          options: [
+            { label: "Viandes", required: true, min: 1, max: 2, choices: [{ name: "Poulet Mariné" }, { name: "Cordon Bleu" }, { name: "Steak" }] },
+            { label: "Sauce", required: true, min: 2, max: 2, choices: [
+              { name: "Samouraï", spicy: true }, { name: "BBQ" }, { name: "Mayonnaise" }, { name: "Algérienne" }, { name: "Tartare" },
+              { name: "Biggy" }, { name: "Harissa", spicy: true }, { name: "Brazil" }, { name: "Sans sauce", exclusive: true }] },
+            { label: "Suppléments", max: 8, choices: [
+              { name: "Lardinettes", price: 1.95 }, { name: "Raclette", price: 1.50 }, { name: "Mozzarella", price: 1.50 }, { name: "Bacon", price: 2.50 },
+              { name: "Cheddar", price: 1.50 }, { name: "Poulet", price: 5.50 }, { name: "Steak", price: 5.50 }, { name: "Cordon Bleu", price: 5.50 }] }
+          ] }
       ]
     },
     {
@@ -78,7 +99,7 @@ window.SMASH_DATA = {
       label: "Kids",
       emoji: "🧒",
       items: [
-        { name: "Menu Smash Kid",   desc: "Smash format mini, frites, boisson. Spécial enfants.", price: 9.10 },
+        { name: "Menu Smash Kid",   desc: "Smash format mini, frites, boisson. Spécial enfants.", price: 9.10, photo: "assets/img/menu-kid.jpg", photoPos: "50% 75%" },
         { name: "Menu Nuggets Kid", desc: "4 nuggets de poulet panés, frites, boisson.",           price: 9.10 }
       ]
     },

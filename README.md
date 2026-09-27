@@ -27,10 +27,11 @@ néon « Crispy · Cheesy · Smash ». Couleurs dans `:root` de `assets/css/styl
 
 ## Photos
 `assets/img/` : `logo.png`, `photo-burger.jpg`, `photo-spot.jpg`, et les visuels produits `menu-*.jpg`
-(Double Smash, Smash Tenders, Bacon BBQ, Raclette, Tacos Simple Gratiné).
+(Double Smash, Smash Tenders, Bacon BBQ, Raclette, Smash Cheese, Tacos Simple Gratiné, Rice Bowl, Fries Bowl, Menu Smash Kid).
 Pour ajouter une photo à un produit : champ `photo: "assets/img/xxx.jpg"` dans `data.js`.
 
 ## À valider avec le client
 - Horaires exacts (actuellement 18h00–23h30 tous les jours)
 - Prix : repris de la carte Uber Eats (les prix sur place peuvent être plus bas)
-- Photos des produits restants (Triple, Smash Cheese, Tacos Double, bowls, p'tite faim…) et logo en HD
+- Photos des produits restants (Triple, Tacos Double, Nuggets Kid, p'tite faim, desserts) et logo en HD
+- Options des tacos (viandes, sauces) à ajouter dans `data.js` sur le même modèle que les bowls

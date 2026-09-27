@@ -416,6 +416,28 @@
     </aside>
   </div>
 
+  <!-- ===== OPTIONS PRODUIT ===== -->
+  <div class="opt" id="opt" hidden>
+    <div class="cart__backdrop" data-close-opt></div>
+    <div class="opt__panel" role="dialog" aria-modal="true" aria-labelledby="optTitle">
+      <header class="opt__head">
+        <img id="optImg" alt="" width="72" height="72" hidden>
+        <div class="opt__title">
+          <h2 id="optTitle"></h2>
+          <p id="optDesc"></p>
+        </div>
+        <button type="button" class="cart__close" data-close-opt aria-label="Fermer">✕</button>
+      </header>
+      <form class="opt__body" id="optForm" novalidate>
+        <div id="optGroups"></div>
+        <p class="checkout__error" id="optError" role="alert"></p>
+      </form>
+      <footer class="opt__foot">
+        <button type="submit" form="optForm" class="btn btn--lg opt__submit" id="optSubmit">Ajouter</button>
+      </footer>
+    </div>
+  </div>
+
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/data.js"></script>
