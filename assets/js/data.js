@@ -63,9 +63,9 @@ window.SMASH_DATA = {
         { name: "Rice Bowl",  desc: "Riz nature, viande au choix, sauce fromagère.", price: 8.00, photo: "assets/img/rice-bowl.jpg",
           options: [
             { label: "Viandes", required: true, max: 1, choices: [{ name: "Poulet Mariné" }, { name: "Steak" }, { name: "Cordon Bleu" }] },
-            { label: "Sauce rice bowl", max: 1, choices: [{ name: "Sauce sweet chili" }, { name: "Sauce Shiracha", spicy: true }, { name: "Sauce BBQ" }] }
+            { label: "Sauce rice bowl", max: 1, choices: [{ name: "Sauce Sweet Chili" }, { name: "Sauce Sriracha", spicy: true }, { name: "Sauce BBQ" }] }
           ] },
-        { name: "Fries Bowl", desc: "Frites servies en bol, viande au choix, 2 sauces, suppléments à volonté.", price: 15.90, tag: "Populaire", photo: "assets/img/fries-bowl.jpg",
+        { name: "Fries Bowl", desc: "Frites servies en bol, viande au choix, 2 sauces, suppléments au choix.", price: 15.90, tag: "Populaire", photo: "assets/img/fries-bowl.jpg",
           options: [
             { label: "Viandes", required: true, min: 1, max: 2, choices: [{ name: "Poulet Mariné" }, { name: "Cordon Bleu" }, { name: "Steak" }] },
             { label: "Sauce", required: true, min: 2, max: 2, choices: [
