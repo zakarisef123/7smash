@@ -1,1 +1,312 @@
-# 7smash
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>7Smash — Smash Burgers · Annemasse / Ambilly</title>
+  <meta name="description" content="7Smash, le smash burger américain d'Annemasse–Ambilly. Steaks écrasés à la minute, cheddar coulant, tacos & crousty. 100% halal. 6 rue de Genève, 74100 Ambilly.">
+  <meta name="theme-color" content="#FFC21A">
+
+  <meta property="og:type" content="restaurant">
+  <meta property="og:title" content="7Smash — Smashed Fresh. Served Loud.">
+  <meta property="og:description" content="Smash burgers, tacos & crousty. 100% halal. Ambilly, à 2 pas de Genève.">
+  <meta property="og:image" content="assets/img/og.svg">
+  <meta property="og:locale" content="fr_FR">
+
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bowlby+One&family=Shrikhand&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700;9..40,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Restaurant",
+    "name": "7Smash Burger",
+    "servesCuisine": ["Burgers", "American", "Tacos", "Halal"],
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "6 rue de Genève",
+      "postalCode": "74100",
+      "addressLocality": "Ambilly",
+      "addressCountry": "FR"
+    },
+    "sameAs": ["https://www.instagram.com/7smash_annemasse/", "https://www.tiktok.com/@7smash.burger.annemasse"],
+    "aggregateRating": { "@type": "AggregateRating", "ratingValue": "4.6", "reviewCount": "110" }
+  }
+  </script>
+</head>
+<body>
+
+  <a class="skip" href="#main">Aller au contenu</a>
+
+  <!-- ===== TOP TICKER ===== -->
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker__track">
+      <span>★ Smashed fresh à la minute</span><span>★ Cheddar coulant</span><span>★ 100% halal</span><span>★ Ambilly · Annemasse · Genève</span><span>★ Tacos & Crousty</span><span>★ No frozen. No fake.</span>
+      <span>★ Smashed fresh à la minute</span><span>★ Cheddar coulant</span><span>★ 100% halal</span><span>★ Ambilly · Annemasse · Genève</span><span>★ Tacos & Crousty</span><span>★ No frozen. No fake.</span>
+    </div>
+  </div>
+
+  <!-- ===== NAV ===== -->
+  <header class="nav" id="top">
+    <a href="#top" class="nav__logo" aria-label="7Smash accueil">
+      <span class="logo-7">7</span><span class="logo-smash">Smash</span>
+    </a>
+    <nav class="nav__links" id="navLinks" aria-label="Navigation principale">
+      <a href="#menu">La carte</a>
+      <a href="#builder">Build ton smash</a>
+      <a href="#method">La méthode</a>
+      <a href="#visit">Nous trouver</a>
+    </nav>
+    <div class="nav__right">
+      <span class="open-pill" id="openPill"><i></i><b>—</b></span>
+      <a class="btn btn--ketchup btn--sm" href="#order">Commander</a>
+      <button class="burger-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navLinks">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ===== HERO ===== -->
+    <section class="hero">
+      <div class="hero__bg halftone" aria-hidden="true"></div>
+      <div class="hero__inner">
+        <div class="hero__copy">
+          <p class="eyebrow"><span class="dot"></span> Annemasse · Ambilly · Est. 2025</p>
+          <h1 class="hero__title">
+            <span class="line">Smashed</span>
+            <span class="line line--script">fresh.</span>
+            <span class="line line--outline">Served</span>
+            <span class="line">loud.</span>
+          </h1>
+          <p class="hero__lead">Boules de bœuf <strong>écrasées à la minute</strong> sur la plancha brûlante. Bords caramélisés, cheddar qui coule, bun brioché toasté. Le vrai smash à l'américaine, à deux pas de Genève.</p>
+          <div class="hero__cta">
+            <a href="#menu" class="btn btn--cheddar btn--lg">Voir la carte →</a>
+            <a href="#order" class="btn btn--ghost btn--lg">Commander</a>
+          </div>
+          <ul class="hero__proof">
+            <li><b>4.6</b><span>★★★★★<br>110+ avis</span></li>
+            <li><b>100%</b><span>viande<br>halal</span></li>
+            <li><b>0</b><span>steak<br>surgelé</span></li>
+          </ul>
+        </div>
+
+        <div class="hero__visual">
+          <div class="sticker sticker--halal" aria-hidden="true">100%<br>HALAL</div>
+          <div class="sticker sticker--new" aria-hidden="true"><span>Cheddar<br>coulant</span></div>
+          <div class="sticker sticker--star" aria-hidden="true">
+            <svg viewBox="0 0 100 100"><path d="M50 2l9 20 21-8-7 21 21 9-21 9 7 21-21-8-9 20-9-20-21 8 7-21-21-9 21-9-7-21 21 8z"/></svg>
+            <span>SMASH<br>SINCE<br>DAY 1</span>
+          </div>
+          <div class="hero__burger" id="heroBurger" aria-hidden="true"></div>
+          <div class="hero__plate" aria-hidden="true"></div>
+        </div>
+      </div>
+
+      <div class="hero__scroll" aria-hidden="true">scroll ↓</div>
+    </section>
+
+    <!-- ===== BIG MARQUEE ===== -->
+    <div class="bigmarquee" aria-hidden="true">
+      <div class="bigmarquee__track">
+        <span>SMASH</span><em>✦</em><span class="o">BURGERS</span><em>✦</em><span>TACOS</span><em>✦</em><span class="o">CROUSTY</span><em>✦</em>
+        <span>SMASH</span><em>✦</em><span class="o">BURGERS</span><em>✦</em><span>TACOS</span><em>✦</em><span class="o">CROUSTY</span><em>✦</em>
+      </div>
+    </div>
+
+    <!-- ===== METHOD ===== -->
+    <section class="method" id="method">
+      <header class="section-head">
+        <p class="kicker">The 7Smash method</p>
+        <h2>Écrasé. Saisi. <span class="script">Adoré.</span></h2>
+        <p class="section-lead">Pas de secret, juste une règle : tout se passe <strong>à la commande</strong>, sous tes yeux.</p>
+      </header>
+
+      <ol class="steps">
+        <li class="step reveal">
+          <span class="step__num">01</span>
+          <div class="step__icon" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><circle cx="60" cy="66" r="34" fill="#8a3b1c" stroke="#111" stroke-width="5"/><circle cx="48" cy="56" r="5" fill="#b35a2c"/><circle cx="70" cy="74" r="4" fill="#b35a2c"/><circle cx="66" cy="52" r="3" fill="#b35a2c"/></svg>
+          </div>
+          <h3>La boule</h3>
+          <p>Bœuf frais halal, roulé en boule. Jamais pressé à l'avance, jamais surgelé.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__num">02</span>
+          <div class="step__icon" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><rect x="22" y="18" width="76" height="16" rx="4" fill="#cfcfcf" stroke="#111" stroke-width="5"/><rect x="52" y="34" width="16" height="22" fill="#cfcfcf" stroke="#111" stroke-width="5"/><ellipse cx="60" cy="86" rx="44" ry="12" fill="#6b2d14" stroke="#111" stroke-width="5"/><path d="M14 100h92" stroke="#111" stroke-width="5" stroke-linecap="round"/><path d="M30 64l-8-8M90 64l8-8M60 60v-8" stroke="#E63022" stroke-width="5" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Le smash</h3>
+          <p>Écrasée d'un coup sec sur la plancha à 250°C. C'est là que naît la croûte.</p>
+        </li>
+        <li class="step reveal">
+          <span class="step__num">03</span>
+          <div class="step__icon" aria-hidden="true">
+            <svg viewBox="0 0 120 120"><ellipse cx="60" cy="72" rx="46" ry="14" fill="#6b2d14" stroke="#111" stroke-width="5"/><path d="M18 62h84l-8 10-8-4-8 12-8-8-8 14-8-10-8 8-8-12-8 6z" fill="#FFC21A" stroke="#111" stroke-width="5" stroke-linejoin="round"/><path d="M40 40c0-8 8-8 8-16M60 40c0-8 8-8 8-16M80 40c0-8 8-8 8-16" stroke="#111" stroke-width="4" fill="none" stroke-linecap="round"/></svg>
+          </div>
+          <h3>Le cheddar</h3>
+          <p>Cheddar fondu direct sur la viande qui grésille. Il coule. Tu connais la suite.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ===== MENU ===== -->
+    <section class="menu" id="menu">
+      <div class="menu__bg checker" aria-hidden="true"></div>
+      <header class="section-head section-head--light">
+        <p class="kicker kicker--cheddar">La carte</p>
+        <h2>Pick your <span class="script">poison.</span></h2>
+        <p class="section-lead">Tous les burgers existent en menu : + frites maison & boisson.</p>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="Catégories de la carte" id="menuTabs"></div>
+      <div class="menu__grid" id="menuGrid" role="tabpanel" aria-live="polite"></div>
+      <p class="menu__note">Prix sur place indicatifs, susceptibles d'évoluer. Allergènes disponibles au comptoir.</p>
+    </section>
+
+    <!-- ===== BUILDER ===== -->
+    <section class="builder" id="builder">
+      <header class="section-head">
+        <p class="kicker">Build your smash</p>
+        <h2>Ton burger. <span class="script">Tes règles.</span></h2>
+        <p class="section-lead">Empile, ajoute, retire. Montre l'écran au comptoir, on te le fait.</p>
+      </header>
+
+      <div class="builder__wrap">
+        <div class="builder__stage">
+          <div class="builder__burger" id="buildBurger" aria-hidden="true"></div>
+          <div class="builder__price">
+            <span>Total</span>
+            <b id="buildPrice">0,00 €</b>
+          </div>
+        </div>
+
+        <form class="builder__controls" id="buildForm" onsubmit="return false">
+          <fieldset>
+            <legend>Steaks smashés</legend>
+            <div class="stepper">
+              <button type="button" data-step="-1" aria-label="Retirer un steak">−</button>
+              <output id="pattyCount">2</output>
+              <button type="button" data-step="1" aria-label="Ajouter un steak">+</button>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Fromage</legend>
+            <div class="chips" data-group="cheese">
+              <label><input type="radio" name="cheese" value="cheddar" checked><span>Cheddar</span></label>
+              <label><input type="radio" name="cheese" value="raclette"><span>Raclette</span></label>
+              <label><input type="radio" name="cheese" value="none"><span>Sans</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Toppings</legend>
+            <div class="chips" data-group="toppings">
+              <label><input type="checkbox" name="top" value="bacon"><span>Bacon de bœuf</span></label>
+              <label><input type="checkbox" name="top" value="onion" checked><span>Oignons</span></label>
+              <label><input type="checkbox" name="top" value="pickles" checked><span>Pickles</span></label>
+              <label><input type="checkbox" name="top" value="salad"><span>Salade</span></label>
+              <label><input type="checkbox" name="top" value="tomato"><span>Tomate</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Sauce</legend>
+            <div class="chips" data-group="sauce">
+              <label><input type="radio" name="sauce" value="smash" checked><span>Sauce 7Smash</span></label>
+              <label><input type="radio" name="sauce" value="bbq"><span>BBQ</span></label>
+              <label><input type="radio" name="sauce" value="algerienne"><span>Algérienne</span></label>
+              <label><input type="radio" name="sauce" value="samourai"><span>Samouraï</span></label>
+            </div>
+          </fieldset>
+
+          <p class="builder__summary" id="buildSummary"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ===== REVIEWS ===== -->
+    <section class="love">
+      <div class="love__score reveal">
+        <b>4.6</b>
+        <div class="stars" aria-label="4,6 sur 5">★★★★★</div>
+        <p>Plus de 110 avis clients</p>
+      </div>
+      <div class="love__words">
+        <p class="kicker kicker--ink">Ce qui revient le plus</p>
+        <ul class="bubbles">
+          <li class="reveal">« Le cheddar coulant 🔥 »</li>
+          <li class="reveal">« Les frites bien assaisonnées »</li>
+          <li class="reveal">« Des portions généreuses »</li>
+          <li class="reveal">« Produits frais »</li>
+          <li class="reveal">« Service rapide »</li>
+          <li class="reveal">« Équipe au top »</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ===== ORDER ===== -->
+    <section class="order" id="order">
+      <div class="order__card">
+        <p class="kicker kicker--cheddar">Hungry ?</p>
+        <h2>Sur place, à emporter <span class="script">ou livré.</span></h2>
+        <div class="order__btns">
+          <a class="btn btn--cheddar btn--lg" href="https://www.ubereats.com/fr/store/7smash/BKchE3bzSB-5Ou_4yx1NYw" target="_blank" rel="noopener">Uber Eats ↗</a>
+          <a class="btn btn--white btn--lg" href="https://maps.google.com/?q=6+rue+de+Gen%C3%A8ve+74100+Ambilly" target="_blank" rel="noopener">Itinéraire ↗</a>
+        </div>
+      </div>
+      <div class="order__burger" id="orderBurger" aria-hidden="true"></div>
+    </section>
+
+    <!-- ===== VISIT ===== -->
+    <section class="visit" id="visit">
+      <div class="visit__info">
+        <p class="kicker">Nous trouver</p>
+        <h2>6 rue de Genève<br><span class="script">Ambilly</span></h2>
+        <p class="visit__sub">74100 · Agglo d'Annemasse · 5 min de la douane de Moillesulaz</p>
+
+        <table class="hours" aria-label="Horaires d'ouverture">
+          <tbody id="hoursBody"></tbody>
+        </table>
+
+        <div class="visit__social">
+          <a class="social" href="https://www.instagram.com/7smash_annemasse/" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.3" fill="currentColor"/></svg>
+            @7smash_annemasse
+          </a>
+          <a class="social" href="https://www.tiktok.com/@7smash.burger.annemasse" target="_blank" rel="noopener">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3v11.5a3.5 3.5 0 1 1-3-3.46V8.1A6.5 6.5 0 1 0 17 14.5V9.4a7 7 0 0 0 4 1.3V7.6A4 4 0 0 1 17 3.5V3z" fill="currentColor"/></svg>
+            @7smash.burger.annemasse
+          </a>
+        </div>
+      </div>
+      <div class="visit__map">
+        <iframe title="Carte 7Smash, 6 rue de Genève, Ambilly" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="https://maps.google.com/maps?q=6%20rue%20de%20Gen%C3%A8ve%2C%2074100%20Ambilly&z=16&output=embed"></iframe>
+        <div class="visit__pin" aria-hidden="true">WE'RE<br>HERE!</div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="footer__big" aria-hidden="true"><span class="logo-7">7</span>SMASH</div>
+    <div class="footer__row">
+      <p>© <span id="year"></span> 7Smash Burger · 6 rue de Genève, 74100 Ambilly</p>
+      <p>Smashed with ♥ in Haute-Savoie</p>
+    </div>
+  </footer>
+
+  <!-- Mobile sticky CTA -->
+  <a class="sticky-cta" href="#order">🍔 Commander</a>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
