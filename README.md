@@ -11,7 +11,27 @@ Tout le contenu métier est dans **`assets/js/data.js`** :
 
 Couleurs et typos : variables en haut de `assets/css/style.css` (`:root`).
 
+## Commande en ligne (Click & Collect)
+Panier sur le site : produits seuls ou en menu (choix de la boisson), burger du configurateur,
+choix sur place / à emporter, créneau de retrait (calculé selon les horaires), prénom, téléphone, précisions.
+Paiement sur place. Pas de serveur nécessaire.
+- **Renseigner `order.whatsapp` dans `assets/js/data.js`** (ex. `"33612345678"`) : la commande
+  est alors envoyée au restaurant sur WhatsApp. Sans numéro, le client obtient un récap à montrer au comptoir.
+- `minDelay`, `slotStep`, `lastOrderBeforeClose` : délai de préparation et créneaux.
+- Paiement en ligne (Stripe / SumUp) possible plus tard : nécessite un compte marchand du restaurant.
+
+## DA
+Tirée du logo et du restaurant : fond noir (murs, banquettes cuir), cheddar orangé
+qui coule (logo = louche de cheddar versée sur le burger), vert-jaune de l'enseigne
+néon « Crispy · Cheesy · Smash ». Couleurs dans `:root` de `assets/css/style.css`.
+
+## Photos
+`assets/img/` : `logo.png`, `photo-burger.jpg`, `photo-spot.jpg`, et les visuels produits `menu-*.jpg`
+(Double Smash, Smash Tenders, Bacon BBQ, Raclette, Smash Cheese, Tacos Simple Gratiné, Rice Bowl, Fries Bowl, Menu Smash Kid).
+Pour ajouter une photo à un produit : champ `photo: "assets/img/xxx.jpg"` dans `data.js`.
+
 ## À valider avec le client
-- Prix sur place et horaires exacts (les valeurs actuelles sont indicatives)
-- Lien de commande (Uber Eats par défaut) et numéro de téléphone éventuel
-- Photos réelles des burgers (les visuels actuels sont des illustrations SVG générées)
+- Horaires exacts (actuellement 18h00–23h30 tous les jours)
+- Prix : repris de la carte Uber Eats (les prix sur place peuvent être plus bas)
+- Photos des produits restants (Triple, Tacos Double, Nuggets Kid, p'tite faim, desserts) et logo en HD
+- Options des tacos (viandes, sauces) à ajouter dans `data.js` sur le même modèle que les bowls
