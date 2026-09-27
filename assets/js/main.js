@@ -425,7 +425,7 @@
     const found = cart.find((l) => l.key === entry.key);
     if (found) found.qty += 1; else cart.push({ qty: 1, ...entry });
     saveCart(); renderCart();
-    toast(`✓ ${entry.name}${entry.variant === "menu" ? " (menu)" : ""} ajouté`);
+    toast(`✓ Ajouté : ${entry.name}${entry.variant === "menu" ? " (menu)" : ""}`);
     $$("[data-cart-count]").forEach((c) => { c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump"); });
   }
 
@@ -468,7 +468,7 @@
     $("#optTitle").textContent = it.name + (entry.variant === "menu" ? " (menu)" : "");
     $("#optDesc").textContent = it.desc || "";
     const img = $("#optImg");
-    img.hidden = !it.photo; if (it.photo) img.src = it.photo;
+    img.hidden = !it.photo; if (it.photo) img.src = it.photo; else img.removeAttribute("src");
     $("#optError").textContent = "";
     $("#optGroups").innerHTML = it.options.map((g, gi) => `
       <fieldset data-max="${g.max || 1}" data-min="${g.min || (g.required ? 1 : 0)}" data-label="${esc(g.label)}">
@@ -548,21 +548,21 @@
     $("#checkout").hidden = n === 0;
     $(".cart__foot").hidden = n === 0;
     linesEl.innerHTML = cart.map((l, i) => `
-      <li class="line${l.photo ? " line--photo" : ""}">
-        ${l.photo ? `<img class="line__img" src="${esc(l.photo)}" alt="" width="56" height="56">` : ""}
-        <div class="line__main">
+      <li class="cline${l.photo ? " cline--photo" : ""}">
+        ${l.photo ? `<img class="cline__img" src="${esc(l.photo)}" alt="" width="56" height="56">` : ""}
+        <div class="cline__main">
           <b>${esc(l.name)}</b>
-          ${l.variant === "menu" ? `<span class="line__tag">Menu</span>` : ""}
+          ${l.variant === "menu" ? `<span class="cline__tag">Menu</span>` : ""}
           ${l.detail ? `<small>${esc(l.detail)}</small>` : ""}
-          ${l.variant === "menu" && DRINKS.length ? `<label class="line__drink">Boisson
+          ${l.variant === "menu" && DRINKS.length ? `<label class="cline__drink">Boisson
             <select data-drink="${i}">${DRINKS.map((d) => `<option${d === l.drink ? " selected" : ""}>${esc(d)}</option>`).join("")}</select></label>` : ""}
         </div>
-        <div class="line__qty">
+        <div class="cline__qty">
           <button type="button" data-qty="${i}:-1" aria-label="Retirer un ${esc(l.name)}">−</button>
           <output>${l.qty}</output>
           <button type="button" data-qty="${i}:1" aria-label="Ajouter un ${esc(l.name)}">+</button>
         </div>
-        <span class="line__price">${euro(l.unit * l.qty)}</span>
+        <span class="cline__price">${euro(l.unit * l.qty)}</span>
       </li>`).join("");
     $("#cartTotal").textContent = euro(cartTotal());
   }
