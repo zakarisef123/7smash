@@ -58,7 +58,7 @@
         <path d="M40 ${y - h + 8} Q150 ${y - h + 3} 262 ${y - h + 8}" stroke="#8E4220" stroke-width="5" fill="none" stroke-linecap="round"/>
         ${crumbs}` };
     },
-    cheese(y, seed = 1, color = "#FFC21A") {
+    cheese(y, seed = 1, color = "#FFB81C") {
       const h = 12, r = rng(seed * 31 + 7);
       const drips = [238, 186, 128, 70].map((x) => [x + (r() * 16 - 8), 10 + r() * 22]);
       let d = `M14 ${y - h} H286 L278 ${y}`;
@@ -108,7 +108,7 @@
     }
   };
 
-  const SAUCE_COLORS = { smash: "#FF8A3D", bbq: "#7A2E12", algerienne: "#F4A259", samourai: "#E4572E" };
+  const SAUCE_COLORS = { smash: "#F7941D", bbq: "#7A2E12", algerienne: "#F4A259", samourai: "#E4572E" };
 
   /**
    * layers : liste de haut en bas, ex. ["bunTop","sauce","cheese","patty","bunBottom"]
@@ -140,19 +140,45 @@
       return `<g class="layer${anim ? " drop" : ""}" style="--i:${opts.animateAll ? i : 0}" data-key="${p.key}"><g transform="translate(0 ${baseY})">${p.svg}</g></g>`;
     }).join("");
     const shadow = `<ellipse cx="150" cy="${baseY + 6}" rx="130" ry="10" fill="rgba(0,0,0,.18)"/>`;
+    const pour = opts.pour ? pourSVG(baseY + parts[n - 1].top) : "";
     return {
       keys: parts.map((p) => p.key),
-      html: `<svg viewBox="0 0 300 ${H}" preserveAspectRatio="xMidYMax meet" role="img">${shadow}${groups}</svg>`,
+      html: `<svg viewBox="${opts.pour ? "0 -150 300 " + (H + 150) : "0 0 300 " + H}" preserveAspectRatio="xMidYMax meet" role="img">${shadow}${groups}${pour}</svg>`,
       count: n
     };
+  }
+
+  /* Le geste signature du logo : la louche de cheddar versée sur le burger.
+     by = haut du bun (coordonnées SVG). */
+  function pourSVG(by) {
+    const C = "#FFB81C";
+    const stream = `M236 -52 C214 -20 162 ${by - 60} 156 ${by + 8}`;
+    const cap = `M78 ${by + 22} Q92 ${by - 2} 150 ${by - 4} Q210 ${by - 2} 224 ${by + 22}
+      L224 ${by + 30} C224 ${by + 58} 208 ${by + 58} 208 ${by + 30}
+      L186 ${by + 30} C186 ${by + 74} 168 ${by + 74} 168 ${by + 30}
+      L132 ${by + 30} C132 ${by + 50} 116 ${by + 50} 116 ${by + 30}
+      L96 ${by + 30} C96 ${by + 64} 80 ${by + 64} 80 ${by + 30} Z`;
+    return `<g class="pour">
+      <g class="pour__pot" transform="rotate(-38 250 -80)">
+        <rect x="206" y="-120" width="90" height="62" rx="10" fill="#2A2A2A" stroke="${INK}" stroke-width="${SW}"/>
+        <rect x="206" y="-120" width="90" height="16" rx="6" fill="${C}" stroke="${INK}" stroke-width="4"/>
+        <rect x="292" y="-108" width="70" height="14" rx="7" fill="#3A3A3A" stroke="${INK}" stroke-width="4"/>
+        <path d="M220 -98 H280" stroke="#555" stroke-width="5" stroke-linecap="round"/>
+      </g>
+      <path class="pour__stream" d="${stream}" stroke="${INK}" stroke-width="22" fill="none" stroke-linecap="round"/>
+      <path class="pour__stream" d="${stream}" stroke="${C}" stroke-width="13" fill="none" stroke-linecap="round"/>
+      <path class="pour__shine" d="${stream}" stroke="#FFE08A" stroke-width="3" fill="none" stroke-linecap="round" stroke-dasharray="18 40"/>
+      <path class="pour__cap" d="${cap}" fill="${C}" stroke="${INK}" stroke-width="${SW - 1}" stroke-linejoin="round"/>
+      <path d="M104 ${by + 10} Q130 ${by + 2} 150 ${by + 2}" stroke="#FFE08A" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>`;
   }
 
   /* ---------------------------------------------------------
      HERO + ORDER BURGERS
      --------------------------------------------------------- */
-  const HERO_STACK = ["bunTop", "sauce", "pickles", "cheese", "patty", "onion", "cheese", "patty", "bunBottom"];
+  const HERO_STACK = ["bunTop", "salad", "cheese", "patty", "onion", "cheese", "patty", "bunBottom"];
   const heroEl = $("#heroBurger");
-  if (heroEl) heroEl.innerHTML = burgerSVG(HERO_STACK, { animateAll: !reduceMotion }).html;
+  if (heroEl) heroEl.innerHTML = burgerSVG(HERO_STACK, { animateAll: !reduceMotion, pour: true }).html;
   const orderEl = $("#orderBurger");
   if (orderEl) orderEl.innerHTML = burgerSVG(["bunTop", "salad", "tomato", "cheese", "patty", "bacon", "cheese", "patty", "bunBottom"]).html;
 
@@ -177,14 +203,17 @@
     fries: `<svg viewBox="0 0 120 100"><path d="M40 20l4 40M52 12l2 48M64 14l-1 46M76 18l-4 42M46 24l-6 36M70 10l0 50" stroke="${INK}" stroke-width="12" stroke-linecap="round"/><path d="M40 20l4 40M52 12l2 48M64 14l-1 46M76 18l-4 42M46 24l-6 36M70 10l0 50" stroke="#FFC21A" stroke-width="6" stroke-linecap="round"/><path d="M30 46h60l-8 46H38z" fill="#E63022" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/><text x="60" y="78" text-anchor="middle" font-family="Bowlby One" font-size="18" fill="#FFF4E0">7</text></svg>`,
     cup: `<svg viewBox="0 0 120 100"><path d="M68 4l-6 22" stroke="${INK}" stroke-width="5" stroke-linecap="round"/><path d="M34 26h52l-6 68H40z" fill="#FF6FB5" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/><rect x="30" y="20" width="60" height="12" rx="4" fill="#FFF4E0" stroke="${INK}" stroke-width="5"/><path d="M40 56h40" stroke="#FFF4E0" stroke-width="6" stroke-linecap="round"/></svg>`,
     cookie: `<svg viewBox="0 0 120 100"><circle cx="60" cy="52" r="38" fill="#D99A4E" stroke="${INK}" stroke-width="5"/><circle cx="46" cy="40" r="5" fill="#3E1F0D"/><circle cx="70" cy="36" r="4" fill="#3E1F0D"/><circle cx="76" cy="60" r="5" fill="#3E1F0D"/><circle cx="50" cy="66" r="4" fill="#3E1F0D"/><circle cx="60" cy="52" r="3" fill="#3E1F0D"/></svg>`,
+    bowl: `<svg viewBox="0 0 120 100"><path d="M12 46h96c0 26-20 44-48 44S12 72 12 46z" fill="#2A2A2A" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/><path d="M18 46c6-14 20-18 30-12 8-10 26-10 32 0 10-6 24-2 28 12z" fill="#FFF6E5" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/><path d="M30 42c10-4 18 2 28-2s18 2 30-2" stroke="#F7941D" stroke-width="6" fill="none" stroke-linecap="round"/><circle cx="46" cy="36" r="5" fill="#8E4220"/><circle cx="70" cy="34" r="5" fill="#8E4220"/></svg>`,
+    tiramisu: `<svg viewBox="0 0 120 100"><path d="M34 14h52v76H34z" fill="#FFF6E5" stroke="${INK}" stroke-width="5" stroke-linejoin="round"/><rect x="34" y="14" width="52" height="16" fill="#6B3A1E" stroke="${INK}" stroke-width="5"/><path d="M34 50h52M34 70h52" stroke="#C99A6B" stroke-width="8"/><path d="M40 22l4 2M56 20l4 2M72 22l4 2" stroke="#3E1F0D" stroke-width="3" stroke-linecap="round"/></svg>`,
     chicken: `<svg viewBox="0 0 120 100"><path d="M30 60c-10-30 30-50 56-30 14 10 10 34-6 42-16 8-44 8-50-12z" fill="#E8913A" stroke="${INK}" stroke-width="5"/><path d="M44 46l6-4M64 40l6 2M74 56l4-4M50 64l6 0" stroke="#8E4220" stroke-width="4" stroke-linecap="round"/></svg>`
   };
 
   function itemVisual(catId, item) {
     const n = item.name.toLowerCase();
-    if (catId === "burgers") {
-      if (n.includes("chicken")) return burgerSVG(["bunTop", "sauce", "salad", "cheese", ["patty", 4], "bunBottom"]).html.replace(/#6B2D14/g, "#D9822B").replace(/#8E4220/g, "#F0A857").replace(/#A8552A/g, "#B96A1E");
+    if (catId === "smash" || n.includes("smash kid")) {
+      if (n.includes("tenders")) return burgerSVG(["bunTop", "sauce", "salad", "cheese", ["patty", 4], "bunBottom"]).html.replace(/#6B2D14/g, "#D9822B").replace(/#8E4220/g, "#F0A857").replace(/#A8552A/g, "#B96A1E");
       const patties = n.includes("triple") ? 3 : n.includes("double") || n.includes("bacon") || n.includes("raclette") ? 2 : 1;
+      if (n.includes("cheese") || n.includes("kid")) return burgerSVG(["bunTop", ["sauce", "#E63022"], "pickles", "cheese", "patty", "bunBottom"]).html;
       const cheese = n.includes("raclette") ? "raclette" : "cheese";
       const stack = ["bunTop", "sauce"];
       if (!n.includes("raclette") && !n.includes("bacon")) stack.push("pickles");
@@ -196,16 +225,17 @@
       stack.push("bunBottom");
       return burgerSVG(stack).html;
     }
-    if (catId === "crousty") return ICONS.crousty;
     if (catId === "tacos") return ICONS.tacos;
-    if (catId === "sides") return n.includes("tenders") || n.includes("nuggets") ? ICONS.chicken : ICONS.fries;
-    if (n.includes("cookie")) return ICONS.cookie;
+    if (n.includes("rice")) return ICONS.bowl;
+    if (n.includes("tiramisu")) return ICONS.tiramisu;
+    if (n.includes("frites") || n.includes("fries")) return ICONS.fries;
+    if (/tenders|nuggets|camembert|mozza|chili/.test(n)) return ICONS.chicken;
     return ICONS.cup;
   }
 
   const tabsEl = $("#menuTabs");
   const gridEl = $("#menuGrid");
-  const CARD_COLORS = ["cheddar", "ketchup", "pink", "pickle", "sky"];
+  const CARD_COLORS = ["cheddar", "orange", "lime", "cream"];
 
   function renderMenu(catId) {
     const cat = D.menu.find((c) => c.id === catId) || D.menu[0];
@@ -215,17 +245,26 @@
       b.tabIndex = on ? 0 : -1;
     });
     gridEl.setAttribute("aria-labelledby", "tab-" + cat.id);
+    if (cat.compact) {
+      gridEl.innerHTML = `<div class="drinklist">
+        <div class="drinklist__head"><h3>${cat.emoji} ${cat.label}</h3><span class="price">${euro(cat.price)}</span></div>
+        <ul>${cat.items.map((it) => `<li>${it.name}${it.tag ? `<small>${it.tag}</small>` : ""}</li>`).join("")}</ul>
+      </div>`;
+      return;
+    }
     gridEl.innerHTML = cat.items.map((it, i) => `
       <article class="card card--${CARD_COLORS[i % CARD_COLORS.length]}" style="--d:${i * 60}ms">
         ${it.tag ? `<span class="card__tag">${it.tag}</span>` : ""}
-        <div class="card__visual">${itemVisual(cat.id, it)}</div>
+        ${it.photo
+          ? `<div class="card__visual card__visual--photo"><img src="${it.photo}" alt="${it.name}" loading="lazy"></div>`
+          : `<div class="card__visual">${itemVisual(cat.id, it)}</div>`}
         <div class="card__body">
           <h3>${it.name}</h3>
           <p>${it.desc}</p>
         </div>
         <div class="card__foot">
           <span class="price">${euro(it.price)}</span>
-          ${it.menu ? `<span class="price-menu">Menu <b>${euro(it.menu)}</b></span>` : ""}
+          ${it.menu ? `<span class="price-menu">Menu <b>${euro(it.menu)}</b>${it.menuNote ? `<small>${it.menuNote}</small>` : ""}</span>` : ""}
         </div>
       </article>`).join("");
   }
