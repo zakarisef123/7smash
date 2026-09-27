@@ -248,7 +248,7 @@
     if (cat.compact) {
       gridEl.innerHTML = `<div class="drinklist">
         <div class="drinklist__head"><h3>${cat.emoji} ${cat.label}</h3><span class="price">${euro(cat.price)}</span></div>
-        <ul>${cat.items.map((it) => `<li>${it.name}${it.tag ? `<small>${it.tag}</small>` : ""}</li>`).join("")}</ul>
+        <ul>${cat.items.map((it, i) => `<li><button type="button" class="drink-add" data-add="${cat.id}:${i}:solo" aria-label="Ajouter ${it.name} au panier">${it.name}${it.tag ? `<small>${it.tag}</small>` : ""}<i aria-hidden="true">+</i></button></li>`).join("")}</ul>
       </div>`;
       return;
     }
@@ -263,8 +263,10 @@
           <p>${it.desc}</p>
         </div>
         <div class="card__foot">
-          <span class="price">${euro(it.price)}</span>
-          ${it.menu ? `<span class="price-menu">Menu <b>${euro(it.menu)}</b>${it.menuNote ? `<small>${it.menuNote}</small>` : ""}</span>` : ""}
+          <button type="button" class="add add--solo" data-add="${cat.id}:${i}:solo" aria-label="Ajouter ${it.name} au panier, ${euro(it.price)}">
+            <span class="add__label">${it.menu ? "Seul" : "Ajouter"}</span><b>${euro(it.price)}</b><i aria-hidden="true">+</i></button>
+          ${it.menu ? `<button type="button" class="add add--menu" data-add="${cat.id}:${i}:menu" aria-label="Ajouter ${it.name} en menu au panier, ${euro(it.menu)}">
+            <span class="add__label">Menu<small>frites + boisson${it.menuNote ? " " + it.menuNote : ""}</small></span><b>${euro(it.menu)}</b><i aria-hidden="true">+</i></button>` : ""}
         </div>
       </article>`).join("");
   }
@@ -289,6 +291,7 @@
   /* ---------------------------------------------------------
      BUILDER
      --------------------------------------------------------- */
+  let lastBuild = null;
   const form = $("#buildForm");
   if (form) {
     const B = D.builder;
@@ -330,6 +333,7 @@
       const names = { 1: "Single", 2: "Double", 3: "Triple", 4: "Quadruple" };
       const bits = [B.labels[cheese], ...tops.map((t) => B.labels[t]), B.labels[sauce]].filter(Boolean);
       $("#buildSummary").innerHTML = `<b>${names[state.patties]} Smash</b> · ${bits.join(", ")}`;
+      lastBuild = { name: `Build ton smash · ${names[state.patties]}`, detail: bits.join(", "), price };
       $$("[data-step]", form).forEach((b) => {
         const s = +b.dataset.step;
         b.disabled = (s < 0 && state.patties <= 1) || (s > 0 && state.patties >= B.maxPatties);
@@ -390,6 +394,224 @@
       const txt = slots.length ? slots.map(([o, c]) => `${o.replace(":", "h")} – ${c.replace(":", "h")}`).join(" · ") : "Fermé";
       return `<tr class="${d === now.day ? "is-today" : ""}"><th scope="row">${DAYS[d]}</th><td>${txt}</td></tr>`;
     }).join("");
+  }
+
+  /* ---------------------------------------------------------
+     PANIER + CLICK & COLLECT
+     Pas de serveur : la commande part sur WhatsApp au resto
+     (numéro dans data.js) ou s'affiche en récap à montrer.
+     --------------------------------------------------------- */
+  const O = D.order || {};
+  const CART_KEY = "7smash-cart";
+  const DRINKS = (D.menu.find((c) => c.compact) || { items: [] }).items.map((d) => d.name);
+  let cart = [];
+  try { cart = JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch (e) { cart = []; }
+  const saveCart = () => { try { localStorage.setItem(CART_KEY, JSON.stringify(cart)); } catch (e) { /* stockage indispo */ } };
+
+  const cartEl = $("#cart");
+  const linesEl = $("#cartLines");
+  const toastEl = $("#toast");
+  let lastFocus = null;
+
+  function toast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add("is-on");
+    clearTimeout(toast.t);
+    toast.t = setTimeout(() => toastEl.classList.remove("is-on"), 1800);
+  }
+
+  function addToCart(entry) {
+    const found = cart.find((l) => l.key === entry.key);
+    if (found) found.qty += 1; else cart.push({ qty: 1, ...entry });
+    saveCart(); renderCart();
+    toast(`✓ ${entry.name}${entry.variant === "menu" ? " (menu)" : ""} ajouté`);
+    $$("[data-cart-count]").forEach((c) => { c.classList.remove("bump"); void c.offsetWidth; c.classList.add("bump"); });
+  }
+
+  function addFromRef(ref) {
+    const [catId, idx, variant] = ref.split(":");
+    const cat = D.menu.find((c) => c.id === catId);
+    const it = cat && cat.items[+idx];
+    if (!it) return;
+    const unit = variant === "menu" ? it.menu : (it.price != null ? it.price : cat.price);
+    addToCart({ key: ref, name: it.name, variant, unit, drink: variant === "menu" ? DRINKS[0] || "" : undefined });
+  }
+
+  const cartTotal = () => cart.reduce((s, l) => s + l.unit * l.qty, 0);
+  const cartCount = () => cart.reduce((s, l) => s + l.qty, 0);
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+  function renderCart() {
+    const n = cartCount();
+    $$("[data-cart-count]").forEach((c) => { c.textContent = n; c.hidden = n === 0; });
+    const sl = $("[data-sticky-label]");
+    if (sl) sl.textContent = n ? `Panier · ${n} · ${euro(cartTotal())}` : "Commander";
+    if (!linesEl) return;
+    $("#cartEmpty").hidden = n > 0;
+    $("#checkout").hidden = n === 0;
+    $(".cart__foot").hidden = n === 0;
+    linesEl.innerHTML = cart.map((l, i) => `
+      <li class="line">
+        <div class="line__main">
+          <b>${esc(l.name)}</b>
+          ${l.variant === "menu" ? `<span class="line__tag">Menu</span>` : ""}
+          ${l.detail ? `<small>${esc(l.detail)}</small>` : ""}
+          ${l.variant === "menu" && DRINKS.length ? `<label class="line__drink">Boisson
+            <select data-drink="${i}">${DRINKS.map((d) => `<option${d === l.drink ? " selected" : ""}>${esc(d)}</option>`).join("")}</select></label>` : ""}
+        </div>
+        <div class="line__qty">
+          <button type="button" data-qty="${i}:-1" aria-label="Retirer un ${esc(l.name)}">−</button>
+          <output>${l.qty}</output>
+          <button type="button" data-qty="${i}:1" aria-label="Ajouter un ${esc(l.name)}">+</button>
+        </div>
+        <span class="line__price">${euro(l.unit * l.qty)}</span>
+      </li>`).join("");
+    $("#cartTotal").textContent = euro(cartTotal());
+  }
+
+  /* créneaux de retrait aujourd'hui, heure de Paris */
+  function pickupSlots() {
+    const now = parisNow();
+    const step = O.slotStep || 15;
+    const earliest = now.min + (O.minDelay || 20);
+    const out = [];
+    const status = isOpen(now);
+    if (status.open) out.push({ v: "Dès que possible", l: `Dès que possible (~${O.minDelay || 20} min)` });
+    (D.hours[now.day] || []).forEach(([o, c]) => {
+      let end = toMin(c); if (end <= toMin(o)) end += 24 * 60;
+      end -= O.lastOrderBeforeClose || 0;
+      let t = Math.max(toMin(o) + step, earliest);
+      t = Math.ceil(t / step) * step;
+      for (; t <= end; t += step) {
+        const h = Math.floor(t / 60) % 24, m = t % 60;
+        const lbl = `${String(h).padStart(2, "0")}h${String(m).padStart(2, "0")}`;
+        out.push({ v: lbl, l: lbl });
+      }
+    });
+    return out;
+  }
+
+  function fillSlots() {
+    const sel = $("#pickupTime");
+    if (!sel) return;
+    const slots = pickupSlots();
+    sel.innerHTML = slots.length
+      ? slots.map((s) => `<option value="${s.v}">${s.l}</option>`).join("")
+      : `<option value="">Plus de créneau aujourd'hui</option>`;
+    sel.disabled = !slots.length;
+    $("#cartSubmit").disabled = !slots.length;
+    $("#checkoutError").textContent = slots.length ? "" : "Les commandes en ligne sont fermées pour aujourd'hui. À demain ! 🍔";
+  }
+
+  function openCart() {
+    if (!cartEl) return;
+    lastFocus = document.activeElement;
+    fillSlots();
+    showDone(false);
+    cartEl.hidden = false;
+    requestAnimationFrame(() => cartEl.classList.add("is-open"));
+    document.body.classList.add("cart-open");
+    setTimeout(() => $(".cart__close", cartEl).focus(), 50);
+  }
+  function closeCart() {
+    if (!cartEl || cartEl.hidden) return;
+    cartEl.classList.remove("is-open");
+    document.body.classList.remove("cart-open");
+    setTimeout(() => { cartEl.hidden = true; }, 300);
+    if (lastFocus) lastFocus.focus();
+  }
+  function showDone(on) {
+    $("#cartDone").hidden = !on;
+    $(".cart__body").hidden = on;
+    $(".cart__foot").hidden = on || cartCount() === 0;
+  }
+
+  function buildMessage(f) {
+    const lines = cart.map((l) => {
+      let t = `• ${l.qty}× ${l.name}`;
+      if (l.variant === "menu") t += ` (MENU${l.drink ? ", boisson : " + l.drink : ""})`;
+      t += ` — ${euro(l.unit * l.qty)}`;
+      return l.detail ? `${t}\n   ↳ ${l.detail}` : t;
+    });
+    return [
+      "🍔 NOUVELLE COMMANDE — 7SMASH (site web)",
+      "",
+      `Mode : ${f.mode}`,
+      `Retrait : ${f.time}`,
+      `Client : ${f.name} — ${f.phone}`,
+      "",
+      ...lines,
+      "",
+      `TOTAL : ${euro(cartTotal())} (paiement sur place)`,
+      f.note ? `\nPrécisions : ${f.note}` : ""
+    ].join("\n").trim();
+  }
+
+  if (cartEl) {
+    document.addEventListener("click", (e) => {
+      const add = e.target.closest("[data-add]");
+      if (add) { addFromRef(add.dataset.add); return; }
+      if (e.target.closest("[data-open-cart]")) { openCart(); return; }
+      if (e.target.closest("[data-close-cart]")) { closeCart(); return; }
+      const q = e.target.closest("[data-qty]");
+      if (q) {
+        const [i, d] = q.dataset.qty.split(":").map(Number);
+        cart[i].qty += d;
+        if (cart[i].qty <= 0) cart.splice(i, 1);
+        saveCart(); renderCart();
+      }
+    });
+    linesEl.addEventListener("change", (e) => {
+      const s = e.target.closest("[data-drink]");
+      if (s) { cart[+s.dataset.drink].drink = s.value; saveCart(); }
+    });
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeCart();
+      if (e.key === "Tab" && !cartEl.hidden) {
+        const f = $$("button, a[href], input, select, textarea", $(".cart__panel")).filter((el) => !el.disabled && el.offsetParent !== null);
+        if (!f.length) return;
+        if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+        else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+      }
+    });
+
+    const buildAdd = $("#buildAdd");
+    if (buildAdd) buildAdd.addEventListener("click", () => {
+      if (!lastBuild) return;
+      addToCart({ key: "build:" + lastBuild.name + lastBuild.detail, name: lastBuild.name, detail: lastBuild.detail, variant: "custom", unit: lastBuild.price });
+    });
+
+    $("#checkout").addEventListener("submit", (e) => {
+      e.preventDefault();
+      const fd = new FormData(e.target);
+      const f = Object.fromEntries(["mode", "time", "name", "phone", "note"].map((k) => [k, String(fd.get(k) || "").trim()]));
+      const err = $("#checkoutError");
+      if (!cart.length) return;
+      if (!f.time) { err.textContent = "Choisis une heure de retrait."; return; }
+      if (!f.name) { err.textContent = "Indique ton prénom."; e.target.name.focus(); return; }
+      if (!/^[0-9 +().-]{8,}$/.test(f.phone)) { err.textContent = "Numéro de téléphone invalide."; e.target.phone.focus(); return; }
+      err.textContent = "";
+      const msg = buildMessage(f);
+      $("#doneRecap").textContent = msg;
+      if (O.whatsapp) {
+        window.open(`https://wa.me/${O.whatsapp}?text=${encodeURIComponent(msg)}`, "_blank", "noopener");
+        $("#doneText").textContent = "WhatsApp s'est ouvert avec ta commande : appuie sur « Envoyer » pour la valider. On te confirme dès réception !";
+      } else {
+        $("#doneText").textContent = `Montre ce récap au comptoir à ${f.time === "Dès que possible" ? "ton arrivée" : f.time}. Paiement sur place.`;
+      }
+      showDone(true);
+      cart = []; saveCart(); renderCart();
+      $(".cart__foot").hidden = true;
+    });
+
+    $("#copyRecap").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText($("#doneRecap").textContent); toast("Récap copié ✓"); }
+      catch (e) { toast("Copie impossible"); }
+    });
+    $("#newOrder").addEventListener("click", () => { showDone(false); closeCart(); });
+
+    renderCart();
   }
 
   /* ---------------------------------------------------------

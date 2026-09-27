@@ -67,7 +67,11 @@
     </nav>
     <div class="nav__right">
       <span class="open-pill" id="openPill"><i></i><b>—</b></span>
-      <a class="btn btn--ketchup btn--sm" href="#order">Commander</a>
+      <button type="button" class="cart-btn" data-open-cart aria-label="Ouvrir le panier">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 7h12l-1.2 12.2a2 2 0 0 1-2 1.8H9.2a2 2 0 0 1-2-1.8z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M9 9V6a3 3 0 0 1 6 0v3" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
+        <span class="cart-btn__label">Panier</span>
+        <b class="cart-count" data-cart-count>0</b>
+      </button>
       <button class="burger-toggle" id="navToggle" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="navLinks">
         <span></span><span></span><span></span>
       </button>
@@ -90,7 +94,7 @@
           <p class="hero__lead">Bœuf <strong>smashé à la minute</strong> sur la plancha brûlante, bords ultra-croustillants, <strong>cheddar versé à la louche</strong> et bun brioché toasté. Le vrai smash à l'américaine, à deux pas de Genève.</p>
           <div class="hero__cta">
             <a href="#menu" class="btn btn--cheddar btn--lg">Voir la carte →</a>
-            <a href="#order" class="btn btn--ghost btn--lg">Commander</a>
+            <a href="#menu" class="btn btn--ghost btn--lg">Commander en ligne</a>
           </div>
           <ul class="hero__proof">
             <li><b>4.6</b><span>★★★★★<br>110+ avis</span></li>
@@ -260,6 +264,7 @@
           </fieldset>
 
           <p class="builder__summary" id="buildSummary"></p>
+          <button type="button" class="btn btn--lg builder__add" id="buildAdd">Ajouter au panier +</button>
         </form>
       </div>
     </section>
@@ -288,11 +293,12 @@
     <section class="order" id="order">
       <div class="order__card">
         <p class="kicker kicker--cheddar">Hungry ?</p>
-        <h2>Sur place, à emporter <span class="script">ou livré.</span></h2>
+        <h2>Commande en ligne, <span class="script">récupère chaud.</span></h2>
+        <p class="order__lead">Compose ton panier sur le site, choisis ton heure de retrait, on te prépare tout. <strong>Paiement sur place.</strong> Envie de livraison ? On est aussi sur Uber Eats.</p>
         <div class="order__btns">
-          <a class="btn btn--cheddar btn--lg" href="https://www.ubereats.com/fr/store/7smash/BKchE3bzSB-5Ou_4yx1NYw" target="_blank" rel="noopener">Uber Eats ↗</a>
-          <a class="btn btn--white btn--lg" href="https://maps.google.com/?q=6+rue+de+Gen%C3%A8ve+74100+Ambilly" target="_blank" rel="noopener">Itinéraire ↗</a>
-        </div>
+          <a class="btn btn--cheddar btn--lg" href="#menu">Commander ici →</a>
+          <a class="btn btn--white btn--lg" href="https://www.ubereats.com/fr/store/7smash/BKchE3bzSB-5Ou_4yx1NYw" target="_blank" rel="noopener">Livraison Uber Eats ↗</a>
+          </div>
       </div>
       <div class="order__burger" id="orderBurger" aria-hidden="true"></div>
       <div class="drip drip--bottom" aria-hidden="true"></div>
@@ -341,7 +347,76 @@
   </footer>
 
   <!-- Mobile sticky CTA -->
-  <a class="sticky-cta" href="#order">🍔 Commander</a>
+  <button type="button" class="sticky-cta" data-open-cart>🍔 <span data-sticky-label>Commander</span></button>
+
+  <!-- ===== PANIER / CLICK & COLLECT ===== -->
+  <div class="cart" id="cart" hidden>
+    <div class="cart__backdrop" data-close-cart></div>
+    <aside class="cart__panel" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+      <header class="cart__head">
+        <h2 id="cartTitle">Ta commande</h2>
+        <button type="button" class="cart__close" data-close-cart aria-label="Fermer le panier">✕</button>
+      </header>
+
+      <div class="cart__body">
+        <div class="cart__empty" id="cartEmpty">
+          <p class="cart__empty-big">Panier vide 😢</p>
+          <p>Ajoute des smash depuis la carte.</p>
+          <a href="#menu" class="btn btn--cheddar" data-close-cart>Voir la carte</a>
+        </div>
+        <ul class="cart__lines" id="cartLines"></ul>
+
+        <form class="checkout" id="checkout" novalidate>
+          <fieldset>
+            <legend>Mode</legend>
+            <div class="chips">
+              <label><input type="radio" name="mode" value="À emporter" checked><span>🛍️ À emporter</span></label>
+              <label><input type="radio" name="mode" value="Sur place"><span>🍽️ Sur place</span></label>
+            </div>
+          </fieldset>
+          <label class="field">
+            <span>Heure de retrait</span>
+            <select name="time" id="pickupTime" required></select>
+          </label>
+          <div class="field-row">
+            <label class="field">
+              <span>Prénom</span>
+              <input name="name" autocomplete="given-name" required placeholder="Ex. Yanis">
+            </label>
+            <label class="field">
+              <span>Téléphone</span>
+              <input name="phone" type="tel" autocomplete="tel" required placeholder="06 12 34 56 78" pattern="[0-9 +().-]{8,}">
+            </label>
+          </div>
+          <label class="field">
+            <span>Précisions <em>(viande & sauces des tacos, allergies…)</em></span>
+            <textarea name="note" rows="2" placeholder="Tacos : viande poulet, sauce algérienne…"></textarea>
+          </label>
+          <p class="checkout__error" id="checkoutError" role="alert"></p>
+        </form>
+      </div>
+
+      <footer class="cart__foot">
+        <div class="cart__total"><span>Total</span><b id="cartTotal">0,00 €</b></div>
+        <button type="submit" form="checkout" class="btn btn--lg cart__submit" id="cartSubmit">Envoyer la commande</button>
+        <p class="cart__legal">Paiement sur place au retrait · CB & espèces</p>
+      </footer>
+
+      <!-- écran de confirmation -->
+      <div class="cart__done" id="cartDone" hidden>
+        <p class="cart__done-emoji">🔥</p>
+        <h3>Commande prête à partir !</h3>
+        <p id="doneText"></p>
+        <pre class="cart__recap" id="doneRecap"></pre>
+        <div class="cart__done-btns">
+          <button type="button" class="btn" id="copyRecap">Copier le récap</button>
+          <button type="button" class="btn btn--ghost" id="newOrder">Nouvelle commande</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/main.js"></script>

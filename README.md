@@ -11,6 +11,15 @@ Tout le contenu métier est dans **`assets/js/data.js`** :
 
 Couleurs et typos : variables en haut de `assets/css/style.css` (`:root`).
 
+## Commande en ligne (Click & Collect)
+Panier sur le site : produits seuls ou en menu (choix de la boisson), burger du configurateur,
+choix sur place / à emporter, créneau de retrait (calculé selon les horaires), prénom, téléphone, précisions.
+Paiement sur place. Pas de serveur nécessaire.
+- **Renseigner `order.whatsapp` dans `assets/js/data.js`** (ex. `"33612345678"`) : la commande
+  est alors envoyée au restaurant sur WhatsApp. Sans numéro, le client obtient un récap à montrer au comptoir.
+- `minDelay`, `slotStep`, `lastOrderBeforeClose` : délai de préparation et créneaux.
+- Paiement en ligne (Stripe / SumUp) possible plus tard : nécessite un compte marchand du restaurant.
+
 ## DA
 Tirée du logo et du restaurant : fond noir (murs, banquettes cuir), cheddar orangé
 qui coule (logo = louche de cheddar versée sur le burger), vert-jaune de l'enseigne

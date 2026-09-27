@@ -108,6 +108,18 @@ window.SMASH_DATA = {
     }
   ],
 
+  /* Commande en ligne (Click & Collect, paiement sur place).
+     whatsapp : numéro du resto au format international SANS + ni espaces (ex. "33612345678").
+       → la commande est envoyée sur WhatsApp au restaurant.
+       Laisser vide : le client obtient un récap à montrer / copier (pas d'envoi).
+     minDelay : délai de préparation minimum (minutes) · slotStep : pas des créneaux (minutes) */
+  order: {
+    whatsapp: "",
+    minDelay: 20,
+    slotStep: 15,
+    lastOrderBeforeClose: 15
+  },
+
   /* Build your smash : prix indicatif (base + suppléments) */
   builder: {
     base: 2.50,          // bun + sauce
