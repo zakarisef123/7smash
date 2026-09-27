@@ -30,10 +30,10 @@ window.SMASH_DATA = {
       label: "Les Smash",
       emoji: "🍔",
       items: [
-        { name: "Double Smash Burger", desc: "Double smash, cheddar, salade, pickles, oignons grillés, sauce Smash.", price: 14.90, menu: 18.90, menuNote: "+ topping cheddar", tag: "Populaire", photo: "assets/img/photo-burger.jpg" },
-        { name: "Smash Tenders",       desc: "Tenders, cheddar, salade, pickles, oignons grillés, sauce Smash.",     price: 15.90, menu: 19.50, menuNote: "+ topping cheddar", tag: "Populaire" },
-        { name: "Smash Bacon BBQ",     desc: "Double smash, cheddar, bacon, salade, pickles, oignons grillés, sauce BBQ.", price: 16.90, menu: 19.90, menuNote: "+ topping cheddar" },
-        { name: "Smash Raclette",      desc: "Double smash, bacon, galette de pomme de terre, raclette fondante, salade, oignons grillés, topping oignons crispy.", price: 17.50, menu: 20.90, tag: "Savoyard" },
+        { name: "Double Smash Burger", desc: "Double smash, cheddar, salade, pickles, oignons grillés, sauce Smash.", price: 14.90, menu: 18.90, menuNote: "+ topping cheddar", tag: "Populaire", photo: "assets/img/menu-double-smash.jpg" },
+        { name: "Smash Tenders",       desc: "Tenders, cheddar, salade, pickles, oignons grillés, sauce Smash.",     price: 15.90, menu: 19.50, menuNote: "+ topping cheddar", tag: "Populaire", photo: "assets/img/menu-smash-tenders.jpg" },
+        { name: "Smash Bacon BBQ",     desc: "Double smash, cheddar, bacon, salade, pickles, oignons grillés, sauce BBQ.", price: 16.90, menu: 19.90, menuNote: "+ topping cheddar", photo: "assets/img/menu-bacon-bbq.jpg" },
+        { name: "Smash Raclette",      desc: "Double smash, bacon, galette de pomme de terre, raclette fondante, salade, oignons grillés, topping oignons crispy.", price: 17.50, menu: 20.90, tag: "Savoyard", photo: "assets/img/menu-raclette.jpg" },
         { name: "Triple Smash",        desc: "Triple smash, oignons grillés, salade, pickles, cheddar, sauce Smash.", price: 19.50, menu: 21.90, menuNote: "+ topping Doritos & cheddar fondu", tag: "Monster" },
         { name: "Smash Cheese",        desc: "Smash, pickles, cheddar, ketchup. Le classique.",                         price: 7.00, tag: "Petit prix" }
       ]
@@ -43,7 +43,7 @@ window.SMASH_DATA = {
       label: "Tacos Gratinés",
       emoji: "🌯",
       items: [
-        { name: "Tacos Simple Gratiné", desc: "Viande au choix, sauce au choix, sauce fromagère maison, gratiné mozza–raclette.",            price: 13.90, menu: 17.90 },
+        { name: "Tacos Simple Gratiné", desc: "Viande au choix, sauce au choix, sauce fromagère maison, gratiné mozza–raclette.",            price: 13.90, menu: 17.90, photo: "assets/img/menu-tacos-gratine.jpg" },
         { name: "Tacos Double Gratiné", desc: "2 galettes, 2 viandes au choix, sauce au choix, sauce fromagère maison, gratiné mozza–raclette.", price: 16.90, menu: 19.90, tag: "XL" }
       ]
     },

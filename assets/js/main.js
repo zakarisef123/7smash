@@ -435,7 +435,7 @@
     const it = cat && cat.items[+idx];
     if (!it) return;
     const unit = variant === "menu" ? it.menu : (it.price != null ? it.price : cat.price);
-    addToCart({ key: ref, name: it.name, variant, unit, drink: variant === "menu" ? DRINKS[0] || "" : undefined });
+    addToCart({ key: ref, name: it.name, photo: it.photo, variant, unit, drink: variant === "menu" ? DRINKS[0] || "" : undefined });
   }
 
   const cartTotal = () => cart.reduce((s, l) => s + l.unit * l.qty, 0);
@@ -452,7 +452,8 @@
     $("#checkout").hidden = n === 0;
     $(".cart__foot").hidden = n === 0;
     linesEl.innerHTML = cart.map((l, i) => `
-      <li class="line">
+      <li class="line${l.photo ? " line--photo" : ""}">
+        ${l.photo ? `<img class="line__img" src="${esc(l.photo)}" alt="" width="56" height="56">` : ""}
         <div class="line__main">
           <b>${esc(l.name)}</b>
           ${l.variant === "menu" ? `<span class="line__tag">Menu</span>` : ""}

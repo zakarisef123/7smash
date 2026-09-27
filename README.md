@@ -26,10 +26,11 @@ qui coule (logo = louche de cheddar versée sur le burger), vert-jaune de l'ense
 néon « Crispy · Cheesy · Smash ». Couleurs dans `:root` de `assets/css/style.css`.
 
 ## Photos
-`assets/img/` : `logo.png`, `photo-burger.jpg`, `photo-spot.jpg`.
+`assets/img/` : `logo.png`, `photo-burger.jpg`, `photo-spot.jpg`, et les visuels produits `menu-*.jpg`
+(Double Smash, Smash Tenders, Bacon BBQ, Raclette, Tacos Simple Gratiné).
 Pour ajouter une photo à un produit : champ `photo: "assets/img/xxx.jpg"` dans `data.js`.
 
 ## À valider avec le client
 - Horaires exacts (actuellement 18h00–23h30 tous les jours)
 - Prix : repris de la carte Uber Eats (les prix sur place peuvent être plus bas)
-- Photos HD des produits et du logo (les fichiers actuels sont des captures basse résolution)
+- Photos des produits restants (Triple, Smash Cheese, Tacos Double, bowls, p'tite faim…) et logo en HD
